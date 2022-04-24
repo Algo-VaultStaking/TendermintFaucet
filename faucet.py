@@ -57,7 +57,7 @@ def send_testnet_transaction(network: str, address: str, tokens: float, guild_id
         if response['result']['code'] == 0:
             log("Sent testnet transaction to " + address)
             update_nonce(guild_id, "comdex", network, nonce)
-            return True
+            return response['result']['hash']
         else:
             log("Failed to send to " + address)
             return False
