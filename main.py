@@ -35,7 +35,7 @@ async def testnet_faucet(ctx, address: str, tokens=1.0):
 
     # if the user or address has already received > max Matic, deny
     elif faucet.get_address_balance(address) >= secrets.MAX_TESTNET_TOKENS_REQUESTED:
-        response = "You have over " + secrets.MAX_TESTNET_TOKENS_REQUESTED + " in your wallet. " \
+        response = "You have over " + str(secrets.MAX_TESTNET_TOKENS_REQUESTED) + " in your wallet. " \
                     "Please request more when you run out."
 
     # if we passed all the above checks, proceed
