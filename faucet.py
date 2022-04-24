@@ -49,7 +49,7 @@ def send_testnet_transaction(network: str, address: str, tokens: float, guild_id
 
     tx.add_transfer(recipient=address, amount=tokens)
     pushable_tx = tx.get_pushable()
-    response = requests.post(url, data=pushable_tx, verify=False)
+    response = requests.post(url, data=pushable_tx)
     print(response.text)
     response = json.loads(response.text)
 
@@ -84,11 +84,21 @@ def update_nonce(guild_id: int, chain: str, network: str, nonce: int):
 
 
 # Get address balance
-def get_address_balance(address: str):
-    # url = "https://rest.comdex.one/cosmos/bank/v1beta1/balances/" + address
-    # url = https://test-rest.comdex.one/cosmos/bank/v1beta1/balances/comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4
-    try:
+def get_address_balance(address: str, network: str):
+    if network == "mainnet":
+        url = "https://rest.comdex.one/cosmos/bank/v1beta1/balances/" + address
+
+    elif network == "testnet":
         url = "https://comets.rest.comdex.one/cosmos/bank/v1beta1/balances/" + address
+
+    elif network == "devnet":
+        url = "https://test-rest.comdex.one/cosmos/bank/v1beta1/balances/" + address
+    else:
+        # default to devnet
+        url = "https://test-rest.comdex.one/cosmos/bank/v1beta1/balances/" + address
+
+    try:
+
         response = requests.get(url, verify=False)
         response = float(json.loads(response.text)['balances'][0]['amount'])/1000000.0
     except Exception as e:
@@ -99,8 +109,14 @@ def get_address_balance(address: str):
 
 def get_testnet_faucet_balance(guild_id: int):
     address = secrets.get_comdex_faucet_address(guild_id)
-    return get_address_balance(address)
+    return get_address_balance(address, "testnet")
+
+
+def get_devnet_faucet_balance(guild_id: int):
+    address = secrets.get_comdex_faucet_address(guild_id)
+    return get_address_balance(address, "devnet")
+
 
 # send_testnet_transaction("mainnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1000000, 890929797318967416)  # mainnet
 # send_testnet_transaction("testnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1000000, 890929797318967416)  # testnet
-# send_testnet_transaction("devnet", "comdex1x7xkvflswrxnkwd42t55jxl9hkhtnnlt43dqs3", 1000000, 890929797318967416)  # devnet
+send_testnet_transaction("devnet", "comdex1x7xkvflswrxnkwd42t55jxl9hkhtnnlt43dqs3", 1000000, 890929797318967416)  # devnet
