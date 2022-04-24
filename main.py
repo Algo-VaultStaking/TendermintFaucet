@@ -40,7 +40,7 @@ async def testnet_faucet(ctx, address: str, tokens=1.0):
 
     # if we passed all the above checks, proceed
     elif valid_address(address):
-        success = faucet.send_testnet_transaction("comdex", address, tokens, ctx.guild.id)
+        success = faucet.send_testnet_transaction("testnet", address, tokens, ctx.guild.id)
 
         # success = True
         if success:
@@ -48,8 +48,7 @@ async def testnet_faucet(ctx, address: str, tokens=1.0):
                        address[-4:] + "."
 
         else:
-            response = "The bot cannot confirm the transaction went through." \
-                       "If still not received, try again. cc:<@712863455467667526>"
+            response = "There was an issue sending funds. cc:<@712863455467667526>"
 
     else:
         response = "usage: `" + prefix + "faucet [address]`. \n" \
