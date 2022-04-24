@@ -29,7 +29,7 @@ async def faucet_version(ctx):
 
 @bot.command(name='testnet', help='usage: ' + prefix + 'testnet [address]')
 async def testnet_faucet(ctx, address: str, tokens=1.0):
-    if faucet.get_testnet_faucet_balance(ctx.guild.id) > tokens:
+    if faucet.get_testnet_faucet_balance(ctx.guild.id) < tokens:
         response = "The faucet does not have enough funds. Please enter a lower amount or add more to `" \
                    + secrets.get_comdex_faucet_address(ctx.guild.id) + "`."
 
