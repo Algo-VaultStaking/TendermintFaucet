@@ -85,9 +85,11 @@ def update_nonce(guild_id: int, chain: str, network: str, nonce: int):
 
 # Get address balance
 def get_address_balance(address: str):
+    # url = "https://rest.comdex.one/cosmos/bank/v1beta1/balances/" + address
+    # url = https://test-rest.comdex.one/cosmos/bank/v1beta1/balances/comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4
     try:
-        url = "https://rest.comdex.one/cosmos/bank/v1beta1/balances/" + address
-        response = requests.get(url)
+        url = "https://comets.rest.comdex.one/cosmos/bank/v1beta1/balances/" + address
+        response = requests.get(url, verify=False)
         response = float(json.loads(response.text)['balances'][0]['amount'])/1000000.0
     except Exception as e:
         print(e)
