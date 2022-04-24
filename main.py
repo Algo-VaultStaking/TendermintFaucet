@@ -11,15 +11,15 @@ token = secrets.DISCORD_TOKEN
 
 prefix = '$'
 bot = commands.Bot(command_prefix=prefix)
-ADMIN_DISCORD_ROLES = ()
+#ADMIN_DISCORD_ROLES = ()
 
 
 @bot.event
-async def on_ready(ctx):
+async def on_ready():
     log(f'Logged in as {bot.user} (ID: {bot.user.id})')
     log('--------')
-    global ADMIN_DISCORD_ROLES
-    ADMIN_DISCORD_ROLES = secrets.get_admin_discord_roles(ctx.guild.id)
+ #   global ADMIN_DISCORD_ROLES
+ #   ADMIN_DISCORD_ROLES = secrets.get_admin_discord_roles(ctx.guild.id)
 
 
 @bot.command(name='version', help='usage: ' + prefix + 'version')
@@ -75,7 +75,7 @@ async def testnet_faucet_error(ctx, error):
 
 
 @bot.command(name='balance', help='usage: ' + prefix + 'balance')
-@commands.has_any_role(*ADMIN_DISCORD_ROLES)
+#@commands.has_any_role(*ADMIN_DISCORD_ROLES)
 async def get_testnet_balance(ctx):
     try:
         balance = faucet.get_testnet_faucet_balance(ctx.guild.id)
