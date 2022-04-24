@@ -63,7 +63,7 @@ async def testnet_faucet(ctx, address: str, tokens=1.0):
 async def testnet_faucet_error(ctx, error):
     if isinstance(error, BadArgument):
         await ctx.send("usage: `" + prefix + "faucet [address]`. \n"
-                       "Please enter a valid address.")
+                       "Invalid address.")
         raise error
     elif isinstance(error, MissingRequiredArgument):
         await ctx.send("usage: `" + prefix + "faucet [address]`")
