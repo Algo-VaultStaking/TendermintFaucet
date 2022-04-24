@@ -16,7 +16,7 @@ def valid_address(address):
 # Send a transaction to the requestor
 def send_testnet_transaction(network: str, address: str, tokens: float, guild_id: int):
     nonce = get_nonce(guild_id, "comdex", network)
-    tokens = int(tokens*1000000)
+    tokens = int(tokens * 1000000)
 
     if network == "mainnet":
         account = 40796
@@ -50,7 +50,8 @@ def send_testnet_transaction(network: str, address: str, tokens: float, guild_id
     tx.add_transfer(recipient=address, amount=tokens)
     pushable_tx = tx.get_pushable()
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36'
+        'authority': 'test-rpc.comdex.one',
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36'
     }
 
     response = requests.post(url, data=pushable_tx, headers=headers, verify=False)
@@ -104,7 +105,7 @@ def get_address_balance(address: str, network: str):
     try:
 
         response = requests.get(url, verify=False)
-        response = float(json.loads(response.text)['balances'][0]['amount'])/1000000.00
+        response = float(json.loads(response.text)['balances'][0]['amount']) / 1000000.00
     except Exception as e:
         print(e)
         response = 0.0
@@ -123,4 +124,4 @@ def get_devnet_faucet_balance(guild_id: int):
 
 # send_testnet_transaction("mainnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1000000, 890929797318967416)  # mainnet
 # send_testnet_transaction("testnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1000000, 890929797318967416)  # testnet
-send_testnet_transaction("devnet", "comdex1x7xkvflswrxnkwd42t55jxl9hkhtnnlt43dqs3", 1000000, 890929797318967416)  # devnet
+# send_testnet_transaction("devnet", "comdex1x7xkvflswrxnkwd42t55jxl9hkhtnnlt43dqs3", 500000, 890929797318967416)  # devnet
