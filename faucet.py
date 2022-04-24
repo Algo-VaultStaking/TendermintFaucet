@@ -1,16 +1,10 @@
 import re
-from datetime import datetime
-
+import os
 import secrets
 from logger import log, raw_audit_log
-from web3 import Web3
-
-
-rpc_url = "https://polygon-rpc.com"
-w3 = Web3(Web3.HTTPProvider(rpc_url))
-
-mumbai_rpc_url = "https://rpc-mumbai.maticvigil.com"
-mumbai_w3 = Web3(Web3.HTTPProvider(mumbai_rpc_url))
+from comdexpy import Transaction
+import requests
+import json
 
 
 def valid_address(address):
@@ -20,106 +14,91 @@ def valid_address(address):
 
 
 # Send a transaction to the requestor
-def send_faucet_transaction(address: str, tokens: float):
-    # Get faucet address and faucet's private key from secrets file
-    token_from, token_from_private_key = secrets.get_guild_wallet()
+def send_testnet_transaction(network: str, address: str, tokens: float, guild_id: int):
+    nonce = get_nonce(guild_id, "comdex", network)
+    tokens = int(tokens*1000000)
 
-    # Token input is in Matic, we need to add the additional 18 decimal places
-    tokens = tokens*1e18
+    if network == "mainnet":
+        account = 40796
+        url = 'https://comdex-rpc.polkachu.com'
+        chain_id = "comdex-1"
 
-    # Get how many transactions we've done to know what our next nonce will be
-    nonce = w3.eth.getTransactionCount(token_from)
-    log("Trying to send mainnet transaction with nonce " + str(nonce) + "...")
+    elif network == "testnet":
+        account = 126
+        url = "https://comets.rpc.comdex.one"
+        chain_id = "comets-test"
 
-    # Iterate over a few different gas values, with 30 seconds between to make sure it goes through
-    for gas in [35*1e9, 50*1e9, 100*1e9, 350*1e9, 500*1e9, 1000*1e9]:
-        try:
-            log("Trying mainnet transaction to " + address + " with nonce " + str(nonce) + " and gas " + str(gas/1e9))
+    elif network == "devnet":
+        account = 0
+        url = 'https://test-rpc.comdex.one'
+        chain_id = "test-1"
 
-            # Create the transaction
-            signed_txn = w3.eth.account.sign_transaction(dict(
-                nonce=nonce,
-                gasPrice=int(gas),
-                gas=21000,
-                to=address,
-                value=int(tokens),
-                data=b'',
-                chainId=137,
-            ),
-              token_from_private_key,
-            )
+    else:
+        return False
 
-            # Send the transaction
-            txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-
-            # Wait for confirmation the transaction was mined
-            w3.eth.wait_for_transaction_receipt(txn_hash, timeout=30)
-
-            log("Sent mainnet transaction to " + address + " with nonce " + str(nonce))
-            raw_audit_log(str(datetime.now()) + ": Sent " + str(tokens) + " Matic to " + str(address) +
-                          " with nonce " + str(nonce) + " and gas " + str(gas/1e9))
-            return True
-        except Exception as e:
-            raw_audit_log(str(datetime.now()) + ": Sending failed: " + str(e))
-    raw_audit_log(str(datetime.now()) + ": Sending failed.")
-    return False
-
-
-def send_mumbai_faucet_transaction(address: str, tokens: float):
-    token_from, token_from_private_key = secrets.get_guild_wallet()
-
-    nonce = mumbai_w3.eth.getTransactionCount(token_from)
-    signed_txn = mumbai_w3.eth.account.sign_transaction(dict(
-        nonce=nonce,
-        gasPrice=25000000000,
-        gas=21000,
-        to=address,
-        value=int(tokens*1e18),
-        data=b'',
-        chainId=80001,
-      ),
-      token_from_private_key,
+    tx = Transaction(
+        privkey=bytes.fromhex(secrets.get_faucet_key(guild_id)),
+        account_num=account,
+        sequence=nonce,
+        fee=2000,
+        gas=80000,
+        memo="",
+        chain_id=chain_id,
+        sync_mode="broadcast_tx_sync",
     )
 
+    tx.add_transfer(recipient=address, amount=tokens)
+    pushable_tx = tx.get_pushable()
+    response = requests.post(url, data=pushable_tx, verify=False)
+    print(response.text)
+    response = json.loads(response.text)
+
     try:
-        # Send the transaction
-        txn_hash = mumbai_w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-
-        # Wait for confirmation the transaction was mined
-        mumbai_w3.eth.wait_for_transaction_receipt(txn_hash, timeout=30)
-
-        return True
+        if response['result']['code'] == 0:
+            log("Sent testnet transaction to " + address)
+            update_nonce(guild_id, "comdex", network, nonce)
+            return True
+        else:
+            log("Failed to send to " + address)
+            return False
     except:
+        log("Failed to send to " + address)
         return False
 
 
+def get_nonce(guild_id: int, chain: str, network: str):
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, "nonce/" + str(guild_id) + "_" + str(chain) + "_" + network + ".txt")
+    f = open(filename, "r")
+    nonce = int(f.readline())
+    f.close()
+    return nonce
+
+
+def update_nonce(guild_id: int, chain: str, network: str, nonce: int):
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, "nonce/" + str(guild_id) + "_" + str(chain) + "_" + network + ".txt")
+    f = open(filename, "w")
+    f.write(str(nonce + 1))
+    f.close()
+
+
 # Get address balance
-def get_balance(address):
-
+def get_address_balance(address: str):
     try:
-        response = w3.eth.getBalance(address)/1e18
-    except Exception as e:
-        print(e)
-        response = 0.0
-    return response
-
-# Get faucet balance
-def get_faucet_balance():
-    address, token_from_private_key = secrets.get_guild_wallet()
-    try:
-        response = w3.eth.getBalance(address)/1e18
+        url = "https://rest.comdex.one/cosmos/bank/v1beta1/balances/" + address
+        response = requests.get(url)
+        response = float(json.loads(response.text)['balances'][0]['amount'])/1000000.0
     except Exception as e:
         print(e)
         response = 0.0
     return response
 
 
-def get_mumbai_balance():
-    token_from, token_from_private_key = secrets.get_guild_wallet()
+def get_testnet_faucet_balance(guild_id: int):
+    address = secrets.get_comdex_faucet_address(guild_id)
+    return get_address_balance(address)
 
-    try:
-        response = mumbai_w3.eth.getBalance(token_from)/1e18
-    except Exception as e:
-        response = e
-    return response
-
+# send_testnet_transaction("mainnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1000000, 890929797318967416)  # mainnet
+# send_testnet_transaction("testnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1000000, 890929797318967416)  # testnet
+# send_testnet_transaction("devnet", "comdex1x7xkvflswrxnkwd42t55jxl9hkhtnnlt43dqs3", 1000000, 890929797318967416)  # devnet
