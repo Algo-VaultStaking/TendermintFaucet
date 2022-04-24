@@ -45,7 +45,7 @@ async def testnet_faucet(ctx, address: str, tokens=1.0):
         # success = True
         if success:
             response = "Sent " + str(tokens) + " CMDX to " + address[:6] + "..." + \
-                       address[-4:] + ": " + success
+                       address[-4:] + ".\nHash: " + success
 
         else:
             response = "There was an issue sending funds. cc:<@712863455467667526>"
