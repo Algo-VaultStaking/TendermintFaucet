@@ -49,7 +49,7 @@ def send_testnet_transaction(network: str, address: str, tokens: float, guild_id
 
     tx.add_transfer(recipient=address, amount=tokens)
     pushable_tx = tx.get_pushable()
-    response = requests.post(url, data=pushable_tx)
+    response = requests.post(url, data=pushable_tx, verify=False)
     print(response.text)
     response = json.loads(response.text)
 
