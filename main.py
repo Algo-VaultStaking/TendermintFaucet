@@ -5,13 +5,13 @@ import faucet
 import secrets
 from faucet import valid_address
 
-from logger import log, audit_log, raw_audit_log
+from logger import log
 
 token = secrets.DISCORD_TOKEN
 
 prefix = '$'
 bot = commands.Bot(command_prefix=prefix)
-#ADMIN_DISCORD_ROLES = ()
+# ADMIN_DISCORD_ROLES = ()
 
 
 @bot.event
@@ -34,7 +34,7 @@ async def testnet_faucet(ctx, address: str, tokens=1.0):
                    + secrets.get_comdex_faucet_address(ctx.guild.id) + "`."
 
     # if the user or address has already received > max Matic, deny
-    elif faucet.get_address_balance(address) >= secrets.MAX_TESTNET_TOKENS_REQUESTED:
+    elif faucet.get_address_balance(address, "testnet") >= secrets.MAX_TESTNET_TOKENS_REQUESTED:
         response = "You have over " + str(secrets.MAX_TESTNET_TOKENS_REQUESTED) + "CMDX in your wallet. " \
                     "Please request more when you run out."
 
@@ -91,7 +91,7 @@ async def devnet_faucet(ctx, address: str, tokens=1.0):
                    + secrets.get_comdex_faucet_address(ctx.guild.id) + "`."
 
     # if the user or address has already received > max Matic, deny
-    elif faucet.get_address_balance(address) >= secrets.MAX_DEVNET_TOKENS_REQUESTED:
+    elif faucet.get_address_balance(address, "devnet") >= secrets.MAX_DEVNET_TOKENS_REQUESTED:
         response = "You have over " + str(secrets.MAX_DEVNET_TOKENS_REQUESTED) + "CMDX in your wallet. " \
                     "Please request more when you run out."
 

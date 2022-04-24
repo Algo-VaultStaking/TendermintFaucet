@@ -100,7 +100,7 @@ def get_address_balance(address: str, network: str):
     try:
 
         response = requests.get(url, verify=False)
-        response = float(json.loads(response.text)['balances'][0]['amount'])/1000000.0
+        response = float(json.loads(response.text)['balances'][0]['amount'])/1000000.00
     except Exception as e:
         print(e)
         response = 0.0
