@@ -8,7 +8,7 @@ import json
 
 
 def valid_address(address):
-    if re.search('comdex1[0-9a-fA-F]{38}', address):
+    if re.search('comdex1[0-9a-zA-Z]{38}', address):
         return True
     return False
 
