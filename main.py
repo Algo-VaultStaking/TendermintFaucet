@@ -85,14 +85,14 @@ async def get_testnet_balance(ctx):
 
 
 @bot.command(name='devnet', help='usage: ' + prefix + 'devnet [address]')
-async def devnet_faucet(ctx, address: str, tokens=1.0):
+async def devnet_faucet(ctx, address: str, tokens=1000.0):
     if faucet.get_devnet_faucet_balance(ctx.guild.id) < tokens:
         response = "The faucet does not have enough funds. Please enter a lower amount or add more to `" \
                    + secrets.get_comdex_faucet_address(ctx.guild.id) + "`."
 
     # if the user or address has already received > max Matic, deny
-    elif faucet.get_address_balance(address, "devnet") >= secrets.MAX_DEVNET_TOKENS_REQUESTED:
-        response = "You have over " + str(secrets.MAX_DEVNET_TOKENS_REQUESTED) + "CMDX in your wallet. " \
+    elif faucet.get_address_balance(address, "devnet") >= secrets.MAX_DEVNET_TOKENS_REQUESTED*5:
+        response = "You have over " + str(secrets.MAX_DEVNET_TOKENS_REQUESTED*5) + "CMDX in your wallet. " \
                     "Please request more when you run out."
 
     # if we passed all the above checks, proceed
