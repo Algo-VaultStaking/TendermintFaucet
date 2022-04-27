@@ -122,6 +122,6 @@ def get_devnet_faucet_balance(guild_id: int):
     return get_address_balance(address, "devnet")
 
 
-# send_testnet_transaction("mainnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1000000, 890929797318967416)  # mainnet
-# send_testnet_transaction("testnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1000000, 890929797318967416)  # testnet
-# send_testnet_transaction("devnet", "comdex1x7xkvflswrxnkwd42t55jxl9hkhtnnlt43dqs3", 500000, 890929797318967416)  # devnet
+# send_testnet_transaction("mainnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1, 890929797318967416)  # mainnet
+# send_testnet_transaction("testnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1, 890929797318967416)  # testnet
+# send_testnet_transaction("devnet", "comdex1x7xkvflswrxnkwd42t55jxl9hkhtnnlt43dqs3", 0.5, 890929797318967416)  # devnet

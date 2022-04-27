@@ -109,7 +109,7 @@ async def devnet_faucet(ctx, address: str, tokens=1.0):
 
     else:
         response = "usage: `" + prefix + "devnet [address]`. \n" \
-                   "Please enter a valid address."
+                   "This bot only accepts Comdex addresses, please enter a valid address."
     log("testnet-faucet: " + response)
     await ctx.send(response)
     return
