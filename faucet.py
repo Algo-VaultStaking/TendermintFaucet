@@ -1,10 +1,14 @@
 import re
 import os
+
+import tendermintwallet
+
 import secrets
 from logger import log
 from tendermintwallet import Transaction
 import requests
 import json
+import models
 
 
 # Send a transaction to the requestor
@@ -12,27 +16,27 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
     nonce = get_nonce(chain, network, guild_id)
     tokens = int(tokens * 1000000)
 
-    info = get_transaction_details(chain, network)
+    info = models.get_transaction_details(chain, network)
 
     tx = Transaction(
-        privkey=bytes.fromhex(secrets.get_faucet_key(guild_id)),
-        account_num=info['account'],
+        privkey=bytes.fromhex(secrets.get_faucet_key(chain, guild_id)),
+        account_num=models.get_faucet_account_num(chain, network, guild_id),
         sequence=nonce,
-        fee=5000,
-        gas=80000,
+        fee=4000,
+        gas=100000,
         fee_denom=info['denom'],
         memo="",
         chain_id=info['chain_id'],
         sync_mode="broadcast_tx_sync",
     )
 
-    tx.add_transfer(recipient=address, amount=tokens, denom=info['denom'])
+    tx.add_transfer(recipient=address, amount=tokens, denom=info['denom'], chain=chain)
     pushable_tx = tx.get_pushable()
     headers = {
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36'
     }
 
-    response = requests.post(info['url'], data=pushable_tx, headers=headers, verify=False)
+    response = requests.post(info['rpc_url'], data=pushable_tx, headers=headers)  # verify=False
     print(response.text)
     response = json.loads(response.text)
 
@@ -49,54 +53,11 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
         return False
 
 
-def get_transaction_details(chain: str, network: str):
-    if chain == "comdex":
-        denom = "ucmdx"
-        if network == "mainnet":
-            account = 40796
-            url = 'https://comdex-rpc.polkachu.com'
-            chain_id = "comdex-1"
-
-        elif network == "testnet":
-            account = 126
-            url = "https://comets.rpc.comdex.one"
-            chain_id = "comets-test"
-
-        elif network == "devnet":
-            account = 41584
-            url = 'https://test-rpc.comdex.one'
-            chain_id = "test-1"
-        else:
-            return False
-
-    elif chain == "osmosis":
-        denom = "uosmo"
-        if network == "mainnet":
-            account = 0
-            url = ''
-            chain_id = ""
-
-        elif network == "testnet":
-            account = 251372
-            url = " https://testnet-rpc.osmosis.zone"
-            chain_id = "osmo-test-4"
-
-        elif network == "devnet":
-            account = 251372
-            url = ' https://testnet-rpc.osmosis.zone'
-            chain_id = "osmo-test-4"
-        else:
-            return False
-    else:
-        return False
-    return {"account": account, "url": url, "chain_id": chain_id, "denom": denom}
-
-
 def valid_address(address):
     if re.search('^comdex1[0-9a-zA-Z]{38}', address):
         return "comdex"
     elif re.search('^osmo1[0-9a-zA-Z]{38}', address):
-        return "osmosis"
+        return "osmo"
     return False
 
 
@@ -119,37 +80,13 @@ def update_nonce(chain: str, network: str, nonce: int, guild_id: int):
 
 # Get address balance
 def get_address_balance(chain: str, network: str, address: str):
-    if chain == "comdex":
-        if network == "mainnet":
-            url = "https://rest.comdex.one/cosmos/bank/v1beta1/balances/" + address
-
-        elif network == "testnet":
-            url = "https://comets.rest.comdex.one/cosmos/bank/v1beta1/balances/" + address
-
-        elif network == "devnet":
-            url = "https://test-rest.comdex.one/cosmos/bank/v1beta1/balances/" + address
-        else:
-            # default to devnet
-            url = "https://test-rest.comdex.one/cosmos/bank/v1beta1/balances/" + address
-
-    elif chain == "osmosis":
-        if network == "mainnet":
-            url = "https://rest.osmosis.zone/cosmos/bank/v1beta1/balances/" + address
-
-        elif network == "testnet":
-            url = "https://testnet-rest.osmosis.zone/cosmos/bank/v1beta1/balances/" + address
-
-        elif network == "devnet":
-            url = "https://testnet-rest.osmosis.zone/cosmos/bank/v1beta1/balances/" + address
-        else:
-            # default to devnet
-            url = "https://testnet-rest.osmosis.zone/cosmos/bank/v1beta1/balances/" + address
+    info = models.get_transaction_details(chain, network)
 
     amount = 0.0
     try:
-        response = json.loads(requests.get(url).text)
+        response = json.loads(requests.get(info['balance_url'] + address).text)
         for x in response['balances']:
-            if x['denom'] == "ucmdx" or x['denom'] == "uosmo":
+            if x['denom'] == info['denom']:
                 amount = float(x['amount']) / 1000000.00
     except Exception as e:
         print(e)
@@ -161,7 +98,6 @@ def get_faucet_balance(chain: str, network: str, guild_id: int):
     address = secrets.get_faucet_address(chain, guild_id)
     return get_address_balance(chain, network, address)
 
-
-# send_testnet_transaction("mainnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1, 890929797318967416)  # mainnet
-# send_testnet_transaction("testnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1, 890929797318967416)  # testnet
-# send_testnet_transaction("devnet", "comdex1x7xkvflswrxnkwd42t55jxl9hkhtnnlt43dqs3", 0.5, 890929797318967416)  # devnet
+# send_testnet_transaction("mainnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1, 837853470136467517)  # mainnet
+# send_testnet_transaction("testnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1, 837853470136467517)  # testnet
+send_transaction("osmo", "devnet", "osmo1m8pz6z6gp2twrw4l90mf2mw55sntvrfxt94pl2", 1, 837853470136467517)  # devnet

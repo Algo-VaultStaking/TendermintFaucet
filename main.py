@@ -39,7 +39,6 @@ async def testnet_faucet(ctx, address: str, tokens=1.0):
                                                                                   "Please request more when you run out."
 
     # if we passed all the above checks, proceed
-
     elif valid_address(address):
         success = faucet.send_transaction("comdex", "testnet", address, tokens, ctx.guild.id)
 
@@ -89,9 +88,11 @@ async def get_testnet_balance(ctx):
 async def devnet_faucet(ctx, address: str, tokens=1000.0):
     if "comdex" in address:
         chain = "comdex"
+        token = "CMDX"
         MAX_DEVNET_TOKENS_REQUESTED = secrets.MAX_COMDEX_DEVNET_TOKENS_REQUESTED
     elif "osmo" in address:
-        chain = "osmosis"
+        chain = "osmo"
+        token = "OSMO"
         MAX_DEVNET_TOKENS_REQUESTED = secrets.MAX_OSMOSIS_DEVNET_TOKENS_REQUESTED
     else:
         response = "usage: `" + prefix + "devnet [address]`. \n" \
@@ -109,12 +110,12 @@ async def devnet_faucet(ctx, address: str, tokens=1000.0):
         response = "Please request more when you run out of tokens."
 
     # if we passed all the above checks, proceed
-    elif network := valid_address(address):
-        success = faucet.send_transaction(network, "devnet", address, tokens, ctx.guild.id)
+    elif valid_address(address):
+        success = faucet.send_transaction(chain, "devnet", address, tokens, ctx.guild.id)
 
         # success = True
         if success:
-            response = "Sent " + str(tokens) + " CMDX to " + address[:8] + "..." + \
+            response = "Sent " + str(tokens) + " " + token + " to " + address[:8] + "..." + \
                        address[-4:] + ".\nHash: " + success
 
         else:
