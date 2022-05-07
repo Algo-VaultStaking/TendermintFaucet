@@ -100,4 +100,4 @@ def get_faucet_balance(chain: str, network: str, guild_id: int):
 
 # send_testnet_transaction("mainnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1, 837853470136467517)  # mainnet
 # send_testnet_transaction("testnet", "comdex1zy7uuu6cd5fde3uunlh5l40jjf24ypd6sy9ej4", 1, 837853470136467517)  # testnet
-send_transaction("osmo", "devnet", "osmo1m8pz6z6gp2twrw4l90mf2mw55sntvrfxt94pl2", 1, 837853470136467517)  # devnet
+# send_transaction("osmo", "devnet", "osmo1m8pz6z6gp2twrw4l90mf2mw55sntvrfxt94pl2", 1, 837853470136467517)  # devnet
