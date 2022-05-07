@@ -23,7 +23,7 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
         account_num=models.get_faucet_account_num(chain, network, guild_id),
         sequence=nonce,
         fee=2000,
-        gas=80000,
+        gas=100000,
         fee_denom=info['denom'],
         memo="",
         chain_id=info['chain_id'],
