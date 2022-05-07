@@ -85,15 +85,19 @@ async def get_testnet_balance(ctx):
 
 
 @bot.command(name='devnet', help='usage: ' + prefix + 'devnet [address]')
-async def devnet_faucet(ctx, address: str, tokens=1000.0):
+async def devnet_faucet(ctx, address: str, tokens=0.1):
     if "comdex" in address:
         chain = "comdex"
         token = "CMDX"
         MAX_DEVNET_TOKENS_REQUESTED = secrets.MAX_COMDEX_DEVNET_TOKENS_REQUESTED
+        if tokens == 0.1:
+            tokens = secrets.MAX_COMDEX_DEVNET_TOKENS_REQUESTED
     elif "osmo" in address:
         chain = "osmo"
         token = "OSMO"
         MAX_DEVNET_TOKENS_REQUESTED = secrets.MAX_OSMOSIS_DEVNET_TOKENS_REQUESTED
+        if tokens == 0.1:
+            tokens = secrets.MAX_OSMOSIS_DEVNET_TOKENS_REQUESTED
     else:
         response = "usage: `" + prefix + "devnet [address]`. \n" \
                                          "This bot only accepts Comdex and Osmosis addresses, please enter a valid address."
@@ -102,8 +106,10 @@ async def devnet_faucet(ctx, address: str, tokens=1000.0):
         return
 
     if faucet.get_faucet_balance(chain, "devnet", ctx.guild.id) < tokens:
-        response = "The faucet does not have enough funds. Please enter a lower amount or add more to `" \
-                   + secrets.get_faucet_address(chain, ctx.guild.id) + "`."
+        if faucet.get_faucet_balance(chain, "devnet", ctx.guild.id) == 0.0:
+            response = "The RPC is down, please try again later"
+        else:
+            response = "The faucet does not have enough funds."
 
     # if the user or address has already received > max Matic, deny
     elif faucet.get_address_balance(chain, "devnet", address) >= MAX_DEVNET_TOKENS_REQUESTED * 5:
