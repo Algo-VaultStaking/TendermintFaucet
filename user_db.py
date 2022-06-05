@@ -59,7 +59,7 @@ def add_transaction(user_id: str, timestamp: str, network: str, server: str):
     cur.execute("SELECT UserID, Network, Server FROM Transactions")
     found = False
     for id, ntwk, svr in cur:
-        if user_id == id and ntwk == network and svr == server:
+        if user_id == id and ntwk == network and svr == str(server):
             found = True
 
     try:
