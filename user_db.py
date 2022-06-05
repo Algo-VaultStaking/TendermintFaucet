@@ -71,7 +71,7 @@ def add_transaction(user_id: str, timestamp: str, network: str, server: str):
             conn.commit()
         else:
             cur.execute("INSERT INTO Transactions VALUES (?, ?, ?, ?)",
-                        (user_id, timestamp, network, server))
+                        (user_id, network, server, timestamp))
 
         conn.commit()
         cur.close()
