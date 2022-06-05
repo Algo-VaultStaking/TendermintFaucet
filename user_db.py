@@ -30,11 +30,12 @@ def initial_setup():
     try:
         conn = connection()
         cur = conn.cursor()
-        # cur.execute("DROP TABLE Transactions;")
+        cur.execute("DROP TABLE Transactions;")
 
         cur.execute("CREATE TABLE Transactions(UserID VARCHAR(20), "
-                    "LastSeen VARCHAR(30), "
-                    "Network VARCHAR(30));")
+                    "Network VARCHAR(30), "
+                    "Server VARCHAR(30), "
+                    "LastSeen VARCHAR(30));")
 
         cur.close()
         conn.close()
@@ -42,35 +43,35 @@ def initial_setup():
         raw_audit_log(f"Error: {e}")
 
 
-def get_user_last_transaction_time(user_id: str, network: str):
+def get_user_last_transaction_time(user_id: str, network: str, server: str):
     conn = connection()
     cur = conn.cursor()
-    cur.execute(f"SELECT LastSeen FROM Transactions WHERE UserID='{user_id}' AND Network='{network}';")
+    cur.execute(f"SELECT LastSeen FROM Transactions WHERE UserID='{user_id}' AND Network='{network}' AND Server='{server}';")
     for d in cur:
         cur.close()
         conn.close()
         return d[0]
 
 
-def add_transaction(user_id: str, timestamp: str, network: str):
+def add_transaction(user_id: str, timestamp: str, network: str, server: str):
     conn = connection()
     cur = conn.cursor()
-    cur.execute("SELECT UserID, Network FROM Transactions")
+    cur.execute("SELECT UserID, Network, Server FROM Transactions")
     found = False
-    for id, ntwk in cur:
-        if user_id == id and ntwk == network:
+    for id, ntwk, svr in cur:
+        if user_id == id and ntwk == network and svr == server:
             found = True
 
     try:
         if found:
             command = "UPDATE Transactions " \
                       "SET LastSeen = '" + timestamp + "' " \
-                      "WHERE UserID = '" + user_id + "' AND Network = '" + network + "';"
+                      f"WHERE UserID = '{user_id}' AND Network = '{network}' AND Server = '{server}';"
             cur.execute(command)
             conn.commit()
         else:
-            cur.execute("INSERT INTO Transactions VALUES (?, ?, ?)",
-                        (user_id, timestamp, network))
+            cur.execute("INSERT INTO Transactions VALUES (?, ?, ?, ?)",
+                        (user_id, timestamp, network, server))
 
         conn.commit()
         cur.close()
