@@ -48,6 +48,29 @@ def get_transaction_details(chain: str, network: str):
 
         }.get(network, {})
 
+    elif chain == "cosmos":
+        return {
+            "mainnet": {
+                'rpc_url': "",
+                "balance_url": "",
+                'chain_id': "",
+                'denom': "uosmo"
+            },
+            "testnet": {
+                'rpc_url': "https://rpc.testnet.cosmos.network/",
+                "balance_url": "https://api.testnet.cosmos.network/cosmos/bank/v1beta1/balances/",
+                'chain_id': "cosmoshub-testnet",
+                'denom': "uatom"
+            },
+            "devnet": {
+                'rpc_url': "",
+                "balance_url": "",
+                'chain_id': "",
+                'denom': ""
+            }
+
+        }.get(network, {})
+
 
 def get_faucet_account_num(chain: str, network: str, guild_id: int):
     return {
@@ -57,7 +80,7 @@ def get_faucet_account_num(chain: str, network: str, guild_id: int):
                 890929797318967416: 40796
             },
             'testnet': {
-                837853470136467517: 0,
+                837853470136467517: 132,
                 890929797318967416: 126
             },
             'devnet': {
@@ -77,6 +100,20 @@ def get_faucet_account_num(chain: str, network: str, guild_id: int):
             'devnet': {
                 837853470136467517: 251540,
                 890929797318967416: 251372
+            }
+        },
+        "cosmos": {
+            'mainnet': {
+                837853470136467517: 0,
+                890929797318967416: 0
+            },
+            'testnet': {
+                837853470136467517: 0,
+                890929797318967416: 0
+            },
+            'devnet': {
+                837853470136467517: 0,
+                890929797318967416: 0
             }
         }
     }.get(chain, {}).get(network, {}).get(guild_id, 0)

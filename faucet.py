@@ -1,8 +1,6 @@
 import re
 import os
 
-import tendermintwallet
-
 import secrets
 from logger import log
 from tendermintwallet import Transaction
@@ -19,10 +17,10 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
     info = models.get_transaction_details(chain, network)
 
     tx = Transaction(
-        privkey=bytes.fromhex(secrets.get_faucet_key(chain, guild_id)),
+        privkey=bytes.fromhex(secrets.get_faucet_key(guild_id)),
         account_num=models.get_faucet_account_num(chain, network, guild_id),
         sequence=nonce,
-        fee=2000,
+        fee=2500,
         gas=100000,
         fee_denom=info['denom'],
         memo="",
@@ -58,6 +56,8 @@ def valid_address(address):
         return "comdex"
     elif re.search('^osmo1[0-9a-zA-Z]{38}', address):
         return "osmo"
+    elif re.search('^cosmos1[0-9a-zA-Z]{38}', address):
+        return "cosmos"
     return False
 
 
