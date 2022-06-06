@@ -60,7 +60,8 @@ async def testnet_faucet(ctx, address: str):
     #    response = "You have over " + str(MAX_TOKENS_REQUESTED) + token + " in your wallet. Please request more when you run out."
 
     # if the user has requested in the past 24 hours, deny
-    elif datetime.now() - datetime.strptime(user_db.get_user_last_transaction_time(ctx.author.id, chain, ctx.guild.id), "%m/%d/%Y, %H:%M:%S") < timedelta(hours=24):
+    elif datetime.now() - datetime.strptime(user_db.get_user_last_transaction_time(ctx.author.id, chain, ctx.guild.id), "%m/%d/%Y, %H:%M:%S") < timedelta(hours=24)\
+            and not ctx.author.id == 712863455467667526:
         time_diff = datetime.now() - datetime.strptime(user_db.get_user_last_transaction_time(ctx.author.id, chain, ctx.guild.id), "%m/%d/%Y, %H:%M:%S")
         response = f"You have already requested. Please request again in: {round((timedelta(days=1)-time_diff).seconds/3600, 2)} hours."
 
