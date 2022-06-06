@@ -11,15 +11,16 @@ import models
 
 # Send a transaction to the requestor
 def send_transaction(chain: str, network: str, address: str, tokens: float, guild_id: int):
-    nonce = get_nonce(chain, network, guild_id)
-    tokens = int(tokens * 1000000)
-
     info = models.get_transaction_details(chain, network)
+
+    #nonce = get_nonce(chain, network, guild_id)
+    sequence = json.loads(requests.get(info['sequence_url'] + address).text)["result"]["value"]["account_number"]
+    tokens = int(tokens * 1000000)
 
     tx = Transaction(
         privkey=bytes.fromhex(secrets.get_faucet_key(guild_id)),
         account_num=models.get_faucet_account_num(chain, network, guild_id),
-        sequence=nonce,
+        sequence=sequence,
         fee=2500,
         gas=100000,
         fee_denom=info['denom'],
@@ -41,7 +42,7 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
     try:
         if response['result']['code'] == 0:
             log("Sent testnet transaction to " + address)
-            update_nonce(chain, network, nonce, guild_id)
+            update_nonce(chain, network, sequence, guild_id)
             return response['result']['hash']
         else:
             log("Failed to send to " + address)

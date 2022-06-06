@@ -2,23 +2,23 @@ def get_transaction_details(chain: str, network: str):
     if chain == "comdex":
         return {
             "mainnet": {
-                'account': 40796,
                 'rpc_url': "https://comdex-rpc.polkachu.com",
                 "balance_url": "https://rest.comdex.one/cosmos/bank/v1beta1/balances/",
+                "sequence_url": "https://rest.comdex.one/auth/accounts/",
                 'chain_id': "comdex-1",
                 'denom': "ucmdx"
             },
             "testnet": {
-                'account': 126,
                 'rpc_url': "https://comets.rpc.comdex.one",
                 "balance_url": "https://comets.rest.comdex.one/cosmos/bank/v1beta1/balances/",
+                "sequence_url": "https://comets.rest.comdex.one/auth/accounts/",
                 'chain_id': "comets-test",
                 'denom': "ucmdx"
             },
             "devnet": {
-                'account': 41584,
                 'rpc_url': "https://test-rpc.comdex.one",
                 "balance_url": "https://test-rest.comdex.one/cosmos/bank/v1beta1/balances/",
+                "sequence_url": "https://test-rest.comdex.one/auth/accounts/",
                 'chain_id': "test-1",
                 'denom': "ucmdx"
             }
@@ -30,18 +30,21 @@ def get_transaction_details(chain: str, network: str):
             "mainnet": {
                 'rpc_url': "",
                 "balance_url": "https://rest.osmosis.zone/cosmos/bank/v1beta1/balances/",
+                "sequence_url": "https://testnet-rest.osmosis.zone/auth/accounts/",
                 'chain_id': "",
                 'denom': "uosmo"
             },
             "testnet": {
                 'rpc_url': "https://testnet-rpc.osmosis.zone",
                 "balance_url": "https://testnet-rest.osmosis.zone/cosmos/bank/v1beta1/balances/",
+                "sequence_url": "https://testnet-rest.osmosis.zone/auth/accounts/",
                 'chain_id': "osmo-test-4",
                 'denom': "uosmo"
             },
             "devnet": {
                 'rpc_url': "https://testnet-rpc.osmosis.zone",
                 "balance_url": "https://testnet-rest.osmosis.zone/cosmos/bank/v1beta1/balances/",
+                "sequence_url": "https://testnet-rest.osmosis.zone/auth/accounts/",
                 'chain_id': "osmo-test-4",
                 'denom': "uosmo"
             }
@@ -59,6 +62,7 @@ def get_transaction_details(chain: str, network: str):
             "testnet": {
                 'rpc_url': "https://rpc.testnet.cosmos.network/",
                 "balance_url": "https://api.testnet.cosmos.network/cosmos/bank/v1beta1/balances/",
+                "sequence_url": "https://api.testnet.cosmos.network/auth/accounts/",
                 'chain_id': "cosmoshub-testnet",
                 'denom': "uatom"
             },
