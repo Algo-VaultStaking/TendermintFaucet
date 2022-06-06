@@ -14,7 +14,7 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
     info = models.get_transaction_details(chain, network)
 
     #nonce = get_nonce(chain, network, guild_id)
-    sequence = json.loads(requests.get(info['sequence_url'] + address).text)["result"]["value"]["account_number"]
+    sequence = int(json.loads(requests.get(info['sequence_url'] + address).text)["result"]["value"]["sequence"])
     tokens = int(tokens * 1000000)
 
     tx = Transaction(
