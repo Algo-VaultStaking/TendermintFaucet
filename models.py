@@ -31,7 +31,7 @@ def get_transaction_details(chain: str, network: str):
                 'rpc_url': "",
                 "balance_url": "https://rest.osmosis.zone/cosmos/bank/v1beta1/balances/",
                 "sequence_url": "https://testnet-rest.osmosis.zone/auth/accounts/",
-                'chain_id': "",
+                'chain_id': "id",
                 'denom': "uosmo"
             },
             "testnet": {
