@@ -9,10 +9,10 @@ def get_transaction_details(chain: str, network: str):
                 'denom': "ucmdx"
             },
             "testnet": {
-                'rpc_url': "https://comets.rpc.comdex.one",
-                "balance_url": "https://comets.rest.comdex.one/cosmos/bank/v1beta1/balances/",
-                "sequence_url": "https://comets.rest.comdex.one/auth/accounts/",
-                'chain_id': "comets-test",
+                'rpc_url': "https://meteor.rpc.comdex.one",
+                "balance_url": "https://meteor.rest.comdex.one/cosmos/bank/v1beta1/balances/",
+                "sequence_url": "https://meteor.rest.comdex.one/auth/accounts/",
+                'chain_id': "meteor-test",
                 'denom': "ucmdx"
             },
             "devnet": {
