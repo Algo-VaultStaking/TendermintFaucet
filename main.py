@@ -40,8 +40,8 @@ async def testnet_faucet(ctx, address: str):
         chain = "cosmos"
         token = "ATOM"
         tokens_requested = secrets.MAX_COSMOS_TESTNET_TOKENS_REQUESTED
-        # await ctx.send("Cosmos is not supported yet.")
-        # return
+        await ctx.send("Cosmos is not supported yet.")
+        return
     elif "osmo1" in address:
         chain = "osmo"
         token = "OSMO"
@@ -67,7 +67,7 @@ async def testnet_faucet(ctx, address: str):
 
     # if the address is not valid, deny
     elif not valid_address(address):
-        response = "usage: `" + prefix + "faucet [address]`. \n" \
+        response = "usage: `" + prefix + "testnet [address]`. \n" \
                                          "Please enter a valid address."
 
     # if we passed all the above checks, proceed
