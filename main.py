@@ -56,7 +56,7 @@ async def testnet_faucet(ctx, address: str):
                    + secrets.get_faucet_address(chain, ctx.guild.id) + "`. cc:<@712863455467667526>"
 
     # if the user or address has already received > max Matic, deny
-    # elif faucet.get_address_balance(chain, "testnet", address) >= MAX_TOKENS_REQUESTED:
+    # elif faucet.get$testnet comdex1vgenpdplmlwvmn2kks4h2784ezt8pgup7pqsn5_address_balance(chain, "testnet", address) >= MAX_TOKENS_REQUESTED:
     #    response = "You have over " + str(MAX_TOKENS_REQUESTED) + token + " in your wallet. Please request more when you run out."
 
     # if the user has requested in the past 24 hours, deny

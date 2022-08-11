@@ -50,7 +50,9 @@ def get_user_last_transaction_time(user_id: str, network: str, server: str):
     for d in cur:
         cur.close()
         conn.close()
-        return d[0]
+        rtn = d[0]
+        return rtn
+    return '01/01/2022, 12:34:56'
 
 
 def add_transaction(user_id: str, timestamp: str, network: str, server: str):
