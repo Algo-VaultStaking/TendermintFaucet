@@ -42,6 +42,7 @@ async def testnet_faucet(ctx, address: str):
         tokens_requested = secrets.MAX_COSMOS_TESTNET_TOKENS_REQUESTED
         # await ctx.send("Cosmos is not supported yet.")
         # return
+
     elif "osmo1" in address:
         chain = "osmo"
         token = "OSMO"
