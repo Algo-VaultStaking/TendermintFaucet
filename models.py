@@ -61,8 +61,8 @@ def get_transaction_details(chain: str, network: str):
             },
             "testnet": {
                 'rpc_url': "https://rpc.testnet.cosmos.network/",
-                "balance_url": "https://api.testnet.cosmos.network/cosmos/bank/v1beta1/balances/",
-                "sequence_url": "https://api.testnet.cosmos.network/auth/accounts/",
+                "balance_url": "https://rest.sentry-01.theta-testnet.polypore.xyz/cosmos/bank/v1beta1/balances/",
+                "sequence_url": "https://rest.sentry-01.theta-testnet.polypore.xyz/auth/accounts/",
                 'chain_id': "cosmoshub-testnet",
                 'denom': "uatom"
             },
