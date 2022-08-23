@@ -113,7 +113,7 @@ def get_faucet_account_num(chain: str, network: str, guild_id: int):
             },
             'testnet': {
                 837853470136467517: 697774,
-                890929797318967416: 0
+                890929797318967416: 697328
             },
             'devnet': {
                 837853470136467517: 0,
