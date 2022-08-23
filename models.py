@@ -60,10 +60,10 @@ def get_transaction_details(chain: str, network: str):
                 'denom': "uosmo"
             },
             "testnet": {
-                'rpc_url': "https://rpc.testnet.cosmos.network/",
+                'rpc_url': "https://rpc.sentry-02.theta-testnet.polypore.xyz",
                 "balance_url": "https://rest.sentry-01.theta-testnet.polypore.xyz/cosmos/bank/v1beta1/balances/",
                 "sequence_url": "https://rest.sentry-01.theta-testnet.polypore.xyz/auth/accounts/",
-                'chain_id': "cosmoshub-testnet",
+                'chain_id': "theta-testnet-001",
                 'denom': "uatom"
             },
             "devnet": {
@@ -112,7 +112,7 @@ def get_faucet_account_num(chain: str, network: str, guild_id: int):
                 890929797318967416: 0
             },
             'testnet': {
-                837853470136467517: 0,
+                837853470136467517: 697774,
                 890929797318967416: 0
             },
             'devnet': {
