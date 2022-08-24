@@ -45,7 +45,7 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
             return response['result']['hash']
         elif response['result']['code'] == 7:
             log("Invalid address: " + address)
-            return False
+            return response['result']['log']
         else:
             log("Failed to send to " + address)
             return False

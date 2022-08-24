@@ -73,19 +73,19 @@ async def testnet_faucet(ctx, address: str):
 
     # if we passed all the above checks, proceed
     else:
-        success = faucet.send_transaction(chain, "testnet", address, tokens_requested, ctx.guild.id)
+        hash = faucet.send_transaction(chain, "testnet", address, tokens_requested, ctx.guild.id)
 
         # success = True
-        if success:
+        if len(hash) == 64:
             user_db.add_transaction(str(ctx.author.id), datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), chain, ctx.guild.id)
-            response = f"Sending {str(tokens_requested)} {token} to {address[:8]}...{address[-4:]}.\nHash: {success}"
-            time.sleep(5)
+            response = f"Sending {str(tokens_requested)} {token} to {address[:8]}...{address[-4:]}.\nHash: {hash}"
 
         else:
-            response = "There was an issue sending funds. cc:<@712863455467667526>"
+            response = hash
 
     log("testnet-faucet: " + response)
     await ctx.send(response)
+    time.sleep(10)
     return
 
 
