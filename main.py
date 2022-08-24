@@ -85,7 +85,7 @@ async def testnet_faucet(ctx, address: str):
 
     log("testnet-faucet: " + response)
     await ctx.send(response)
-    time.sleep(10)
+    time.sleep(5)
     return
 
 
