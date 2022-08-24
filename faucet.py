@@ -46,6 +46,9 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
         elif response['result']['code'] == 7:
             log("Invalid address: " + address)
             return response['result']['log']
+        elif response['result']['code'] == 32:
+            log("Invalid sequence: " + address)
+            return "The Faucet is working on a backlog of transactions. Please try again shortly."
         else:
             log("Failed to send to " + address)
             return "There was an issue sending funds. cc: <@712863455467667526>"
