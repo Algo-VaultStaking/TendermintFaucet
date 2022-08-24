@@ -1,3 +1,4 @@
+import time
 from datetime import datetime, timedelta
 
 from discord.ext import commands
@@ -42,7 +43,6 @@ async def testnet_faucet(ctx, address: str):
         tokens_requested = secrets.MAX_COSMOS_TESTNET_TOKENS_REQUESTED
         # await ctx.send("Cosmos is not supported yet.")
         # return
-
     elif "osmo1" in address:
         chain = "osmo"
         token = "OSMO"
@@ -79,6 +79,7 @@ async def testnet_faucet(ctx, address: str):
         if success:
             user_db.add_transaction(str(ctx.author.id), datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), chain, ctx.guild.id)
             response = f"Sending {str(tokens_requested)} {token} to {address[:8]}...{address[-4:]}.\nHash: {success}"
+            time.sleep(5)
 
         else:
             response = "There was an issue sending funds. cc:<@712863455467667526>"

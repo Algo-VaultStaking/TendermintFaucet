@@ -43,6 +43,9 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
             log("Sent testnet transaction to " + address)
             update_nonce(chain, network, sequence, guild_id)
             return response['result']['hash']
+        elif response['result']['code'] == 7:
+            log("Invalid address: " + address)
+            return False
         else:
             log("Failed to send to " + address)
             return False
