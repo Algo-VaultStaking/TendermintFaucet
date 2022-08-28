@@ -79,13 +79,12 @@ async def testnet_faucet(ctx, address: str):
         if len(hash) == 64:
             user_db.add_transaction(str(ctx.author.id), datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), chain, ctx.guild.id)
             response = f"Sending {str(tokens_requested)} {token} to {address[:8]}...{address[-4:]}.\nHash: {hash}"
-
+            time.sleep(5)
         else:
             response = hash
 
     log("testnet-faucet: " + response)
     await ctx.send(response)
-    time.sleep(5)
     return
 
 
@@ -108,8 +107,13 @@ async def testnet_faucet_error(ctx, error):
 # @commands.has_any_role(*ADMIN_DISCORD_ROLES)
 async def get_testnet_balance(ctx):
     try:
-        balance = faucet.get_faucet_balance("comdex", "testnet", ctx.guild.id)
-        response = "The faucet has " + str(balance) + " CMDX"
+        cmdx_balance = faucet.get_faucet_balance("comdex", "testnet", ctx.guild.id)
+        osmo_balance = faucet.get_faucet_balance("osmo", "testnet", ctx.guild.id)
+        atom_balance = faucet.get_faucet_balance("cosmos", "testnet", ctx.guild.id)
+        response = f"The faucet has the following tokens remaining: \n" \
+                   f"\t{cmdx_balance} CMDX\n" \
+                   f"\t{osmo_balance} OSMO\n" \
+                   f"\t{atom_balance} ATOM"
         await ctx.send(response)
     except Exception as e:
         log(e)
