@@ -6,7 +6,7 @@ import mariadb
 
 
 # Connect to MariaDB Platform
-def connection():
+def get_db_connection():
     try:
         conn = mariadb.connect(
             user=secrets.MARIADB_USER,
@@ -26,7 +26,7 @@ def connection():
 
 def initial_setup():
     try:
-        conn = connection()
+        conn = get_db_connection()
         cur = conn.cursor()
         cur.execute("DROP TABLE Transactions;")
 
@@ -42,21 +42,18 @@ def initial_setup():
         raw_audit_log(f"Error: {e}")
 
 
-def get_user_last_transaction_time(user_id: str, network: str, server: str):
-    conn = connection()
-    cur = conn.cursor()
+def get_user_last_transaction_time(db_connection, user_id: str, network: str, server: str):
+    cur = db_connection.cursor()
     cur.execute(f"SELECT LastSeen FROM Transactions WHERE UserID='{user_id}' AND Network='{network}' AND Server='{server}';")
     # cur.execute(f"SELECT LastSeen FROM Transactions WHERE (UserID='{user_id}' OR Address='{address}') AND Network='{network}' AND Server='{server}';")
     for d in cur:
-        cur.close()
-        conn.close()
         rtn = d[0]
         return rtn
     return '01/01/2022, 12:34:56'
 
 
-def add_transaction(user_id: str, timestamp: str, network: str, server: str):
-    conn = connection()
+def add_transaction(db_connection, user_id: str, timestamp: str, network: str, server: str):
+    conn = db_connection
     cur = conn.cursor()
     cur.execute("SELECT UserID, Network, Server FROM Transactions")
     found = False
@@ -74,12 +71,8 @@ def add_transaction(user_id: str, timestamp: str, network: str, server: str):
         else:
             cur.execute("INSERT INTO Transactions VALUES (?, ?, ?, ?)",
                         (user_id, network, server, timestamp))
-
-        conn.commit()
-        cur.close()
-        conn.close()
+            conn.commit()
         return True
     except mariadb.Error as e:
         raw_audit_log(f"Error: {e}")
-        conn.close()
         return False

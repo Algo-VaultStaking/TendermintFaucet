@@ -1,5 +1,4 @@
 import re
-import os
 
 import secrets
 from logger import log
