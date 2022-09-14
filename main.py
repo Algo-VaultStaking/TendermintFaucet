@@ -55,7 +55,7 @@ async def testnet_faucet(ctx, address: str):
     # if the faucet ran out of tokens, deny
     if faucet.get_faucet_balance(chain, "testnet", ctx.guild.id) < tokens_requested:
         response = "The faucet does not have enough funds. More funds are needed at address: `" \
-                   + secrets.get_faucet_address(chain, ctx.guild.id) + "`. cc:<@712863455467667526>"
+                   + secrets.get_faucet_address(chain, ctx.guild.id) + "`."
 
     # if the user or address has already received > max Matic, deny
     # elif faucet.get$testnet comdex1vgenpdplmlwvmn2kks4h2784ezt8pgup7pqsn5_address_balance(chain, "testnet", address) >= MAX_TOKENS_REQUESTED:
