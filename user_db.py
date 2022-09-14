@@ -1,7 +1,5 @@
-import datetime
-from math import floor
-import requests
-from logger import log, raw_audit_log
+
+from logger import raw_audit_log
 import secrets
 
 import mariadb
@@ -32,9 +30,10 @@ def initial_setup():
         cur = conn.cursor()
         cur.execute("DROP TABLE Transactions;")
 
-        cur.execute("CREATE TABLE Transactions(UserID VARCHAR(20), "
+        cur.execute("CREATE TABLE Transactions("
+                    "UserID VARCHAR(20), "
+                    "Address VARCHAR(70), "
                     "Network VARCHAR(30), "
-                    "Server VARCHAR(30), "
                     "LastSeen VARCHAR(30));")
 
         cur.close()
@@ -47,6 +46,7 @@ def get_user_last_transaction_time(user_id: str, network: str, server: str):
     conn = connection()
     cur = conn.cursor()
     cur.execute(f"SELECT LastSeen FROM Transactions WHERE UserID='{user_id}' AND Network='{network}' AND Server='{server}';")
+    # cur.execute(f"SELECT LastSeen FROM Transactions WHERE (UserID='{user_id}' OR Address='{address}') AND Network='{network}' AND Server='{server}';")
     for d in cur:
         cur.close()
         conn.close()

@@ -28,6 +28,7 @@ async def on_ready():
 
 @bot.command(name='version', help='usage: ' + prefix + 'version')
 async def faucet_version(ctx):
+    print("here")
     await ctx.send('v1.0.0')
 
 
