@@ -52,8 +52,8 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
         else:
             log("Failed to send to " + address)
             return "There was an issue sending funds. cc: <@712863455467667526>"
-    except:
-        log("Failed to send to " + address)
+    except Exception as e:
+        log("There was an exception:\n"+e)
         return False
 
 
