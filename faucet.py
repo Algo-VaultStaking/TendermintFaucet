@@ -49,12 +49,15 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
         elif response['result']['code'] == 32:
             log("Invalid sequence: " + address)
             return "The faucet is working on a backlog of transactions. Please try again shortly."
+        elif response['result']['code'] == -32603:
+            log("'Internal error, tx already exists in cache'")
+            return "Tx already exists in cache."
         else:
             log("Failed to send to " + address)
             return "There was an issue sending funds. cc: <@712863455467667526>"
     except Exception as e:
         log("There was an exception:\n" + str(response))
-        return False
+        return "We ran into a problem. cc: <@712863455467667526>"
 
 
 def valid_address(address):
