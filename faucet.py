@@ -35,7 +35,7 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
     }
 
     response = requests.post(info['rpc_url'], data=pushable_tx, headers=headers)  # verify=False
-    print(response.text)
+    # print(response.text)
     response = json.loads(response.text)
 
     try:
@@ -48,13 +48,16 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
         elif response['result']['code'] == 32:
             log("Invalid sequence: " + address)
             return "The faucet is working on a backlog of transactions. Please try again shortly."
-        elif response['error']['code'] == -32603:
-            log("'Internal error, tx already exists in cache'")
-            return "Tx already exists in cache."
         else:
             log("Failed to send to " + address)
             return "There was an issue sending funds. cc: <@712863455467667526>"
     except Exception as e:
+        try:
+            if response['error']['code'] == -32603:
+                log("'Internal error, tx already exists in cache'")
+                return "Tx already exists in cache."
+        except:
+            pass
         log(f"There was an exception:\n{str(e)}\n{str(response)}")
         log(f"code: {response['result']['code']}")
         return "We ran into a problem. cc: <@712863455467667526>"
