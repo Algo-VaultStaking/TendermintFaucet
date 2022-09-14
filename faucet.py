@@ -41,7 +41,6 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
     try:
         if response['result']['code'] == 0:
             log("Sent testnet transaction to " + address)
-            update_nonce(chain, network, sequence, guild_id)
             return response['result']['hash']
         elif response['result']['code'] == 7:
             log("Invalid address: " + address)
@@ -69,23 +68,6 @@ def valid_address(address):
     elif re.search('^cosmos1[0-9a-zA-Z]{38}', address):
         return "cosmos"
     return False
-
-
-def get_nonce(chain: str, network: str, guild_id: int):
-    dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, "nonce/" + str(guild_id) + "_" + str(chain) + "_" + network + ".txt")
-    f = open(filename, "r")
-    nonce = int(f.readline())
-    f.close()
-    return nonce
-
-
-def update_nonce(chain: str, network: str, nonce: int, guild_id: int):
-    dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, "nonce/" + str(guild_id) + "_" + str(chain) + "_" + network + ".txt")
-    f = open(filename, "w")
-    f.write(str(nonce + 1))
-    f.close()
 
 
 # Get address balance
