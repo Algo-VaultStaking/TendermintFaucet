@@ -49,7 +49,7 @@ def send_transaction(chain: str, network: str, address: str, tokens: float, guil
         elif response['result']['code'] == 32:
             log("Invalid sequence: " + address)
             return "The faucet is working on a backlog of transactions. Please try again shortly."
-        elif response['result']['code'] == -32603:
+        elif response['error']['code'] == -32603:
             log("'Internal error, tx already exists in cache'")
             return "Tx already exists in cache."
         else:
