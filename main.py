@@ -49,6 +49,8 @@ async def testnet_faucet(ctx, address: str):
         chain = "osmo"
         token = "OSMO"
         tokens_requested = secrets.MAX_OSMOSIS_TESTNET_TOKENS_REQUESTED
+        # await ctx.send("Please use `https://faucet.osmosis.zone` for OSMO tokens.")
+        # return
     else:
         await ctx.send("This chain is not supported.")
         return
@@ -83,7 +85,7 @@ async def testnet_faucet(ctx, address: str):
         if len(resp) == 64:
             user_db.add_transaction(db_connection, str(ctx.author.id), datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), chain, ctx.guild.id)
             response = f"Sending {str(tokens_requested)} {token} to {address[:8]}...{address[-4:]}.\nHash: {resp}"
-            time.sleep(5)
+            time.sleep(1)
         else:
             response = resp
 
