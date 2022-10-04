@@ -105,7 +105,7 @@ async def testnet_faucet_error(ctx, error):
         await ctx.send("usage: `" + prefix + "testnet [address]`")
         raise error
     else:
-        await ctx.send("usage: `" + prefix + "testnet [address]` cc:<@712863455467667526>")
+        await ctx.send("Please try again soon. cc:<@712863455467667526>")
         log(error)
         raise error
 
