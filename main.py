@@ -52,8 +52,8 @@ async def testnet_faucet(ctx, address: str):
         chain = "osmo"
         token = "OSMO"
         tokens_requested = secrets.MAX_OSMOSIS_TESTNET_TOKENS_REQUESTED
-        # await ctx.send("Please use `https://faucet.osmosis.zone` for OSMO tokens.")
-        # return
+        await ctx.send("Please use `https://faucet.osmosis.zone` for OSMO tokens.")
+        return
     else:
         await ctx.send("This chain is not supported.")
         return
