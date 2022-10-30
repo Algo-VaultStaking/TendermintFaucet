@@ -34,7 +34,10 @@ async def faucet_version(ctx):
 
 @bot.command(name='testnet', help='usage: ' + prefix + 'testnet [address]')
 async def testnet_faucet(ctx, address: str):
-
+    print(ctx.channel.id)
+    if int(ctx.channel.id) != int(961609330501763072) and int(ctx.channel.id) != int(967597663535120384):
+        await ctx.send("Please only use the <#961609330501763072> channel.")
+        return
     if "comdex1" in address:
         chain = "comdex"
         token = "CMDX"
@@ -85,7 +88,7 @@ async def testnet_faucet(ctx, address: str):
         if len(resp) == 64:
             user_db.add_transaction(db_connection, str(ctx.author.id), datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), chain, ctx.guild.id)
             response = f"Sending {str(tokens_requested)} {token} to {address[:8]}...{address[-4:]}.\nHash: {resp}"
-            time.sleep(1)
+            # time.sleep(1)
         else:
             response = resp
 
